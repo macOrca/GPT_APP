@@ -1,11 +1,8 @@
-from dotenv import load_dotenv
 from openai import OpenAI
 import streamlit as st
-import os
 
 def gpt_chatbot():
     # OpenAIのAPIキーを設定
-    load_dotenv()
     client = OpenAI()
     client.api_key = st.secrets["openai"]["OPENAI_API_KEY"]
 
