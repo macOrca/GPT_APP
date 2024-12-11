@@ -7,7 +7,7 @@ def gpt_chatbot():
     # OpenAIのAPIキーを設定
     load_dotenv()
     client = OpenAI()
-    client.api_key = os.getenv("OPENAI_API_KEY")
+    client.api_key = st.secrets["openai"]["OPENAI_API_KEY"]
 
     # GPTの初期設定
     gpt_model = "gpt-4o"
