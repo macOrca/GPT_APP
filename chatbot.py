@@ -3,8 +3,7 @@ import streamlit as st
 
 def gpt_chatbot():
     # OpenAIのAPIキーを設定
-    client = OpenAI()
-    client.api_key = st.secrets["openai"]["OPENAI_API_KEY"]
+    client = OpenAI(api_key = st.secrets["openai"]["OPENAI_API_KEY"])
 
     # GPTの初期設定
     gpt_model = "gpt-4o"
