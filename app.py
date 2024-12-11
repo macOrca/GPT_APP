@@ -1,18 +1,7 @@
 import streamlit as st
 from cordform import cord_form
 from chatbot import gpt_chatbot
-
-# ログインフォーム
-def show_login_form():
-    user_name = st.text_input("ユーザー名")
-    password = st.text_input("パスワード", type="password")
-    if st.button('ログイン'):
-        # 簡易的な認証処理
-        if user_name == "admin" and password == "password":
-            st.session_state['authenticated'] = True
-            st.rerun()
-        else:
-            st.error("ユーザー名またはパスワードが間違っています。")
+from login import login_form
 
 def main():
     # ログイン状態の初期化
@@ -21,7 +10,7 @@ def main():
 
     # ログインしていない場合はログインフォームを表示
     if not st.session_state['authenticated']:
-        show_login_form()
+        login_form()
 
     else:
         # カラム設定
