@@ -21,7 +21,7 @@ if not st.session_state.authenticated:
     user_type = st.radio("ユーザータイプを選択してください:", ["生徒", "先生"])
     username = st.text_input("ユーザ名")
     password = st.text_input("パスワード", type="password")
-    if st.button("Login"):
+    if st.button("ログイン"):
         role = authenticate(username, password, user_type)
         if role:
             st.session_state.authenticated = True
