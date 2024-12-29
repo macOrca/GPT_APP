@@ -1,14 +1,9 @@
 import streamlit as st
 from db_utils import fetch_problems, save_submission
-from analysis import execute_code, analyze_submission
+from analysis import execute_code, analyze_submission, response_chatbot
 
-# Student dashboard
-def student_dashboard():
-    st.header("解答提出ページ")
-    st.write("以下の練習問題を解き、解答のコードを提出してください。")
-    st.write("他の問題は、左のサイドバーから選択できます。")
-    st.divider()
 
+def code_form():
     problems = fetch_problems()
     if problems:
         # サイドバーで問題を選択
@@ -39,3 +34,50 @@ def student_dashboard():
             st.write(feedback)
     else:
         st.write("練習問題はありません。")
+
+def chatbot():
+    #入力欄用のカスタムCSS
+    chat_input_style = f"""
+    <style>
+        .stChatInput {{
+            position: fixed;
+            bottom: 3rem;
+        }}
+    </style>
+    """
+    st.markdown(chat_input_style, unsafe_allow_html=True)
+
+    # メッセージの初期化
+    if "messages" not in st.session_state:
+        st.session_state.messages = [{"role": "assistant", "content": "こんにちは。質問があれば、下の入力欄に入力してください。"}]
+
+    # あれば、過去のメッセージを表示
+    for message in st.session_state.messages:
+        st.chat_message(message["role"]).markdown(message["content"])
+
+    # ユーザー入力の取得
+    user_input= st.chat_input("質問などを入力")
+    if user_input:
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.chat_message("user").markdown(user_input)
+
+        # GPTの応答を取得
+        gpt_reply = response_chatbot()
+
+        # GPTの返答を追加
+        st.session_state.messages.append({"role": "assistant", "content": gpt_reply})
+        st.chat_message("assistant").markdown(gpt_reply)
+
+# Student dashboard
+def student_dashboard():
+    col_form, col_chatbot = st.columns(spec=2, gap="medium")
+
+    with col_form:
+        st.header("解答提出ページ")
+        st.write("以下の練習問題を解き、解答のコードを提出してください。")
+        st.write("他の問題は、左のサイドバーから選択できます。")
+        st.divider()
+        code_form()
+
+    with col_chatbot:
+        chatbot()
