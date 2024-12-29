@@ -83,3 +83,15 @@ def analyze_class_feedback(feedbacks):
         ]
     )
     return response.choices[0].message.content
+
+def response_chatbot():
+
+        # GPTの応答を取得
+        response = client.chat.completions.create(
+            model=gpt_model,
+            messages=[
+                    {"role": m["role"], "content": m["content"]}
+                    for m in st.session_state.messages
+            ]
+        )
+        return response.choices[0].message.content
