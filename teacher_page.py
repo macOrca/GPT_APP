@@ -1,5 +1,5 @@
 import streamlit as st
-from db_utils import fetch_username, add_problem, delete_problem, fetch_problems, fetch_submissions, fetch_submissions_by_problem
+from db_utils import fetch_username, add_problem, delete_problem, fetch_problems, fetch_submissions, fetch_submissions_by_problem, fetch_users
 from analysis import analyze_class_feedback
 
 # Teacher dashboard
@@ -9,12 +9,12 @@ def teacher_dashboard():
     st.divider()
 
     # サイドバーに項目表示
-    section = st.sidebar.radio("項目を選択", ["各問題の分析情報", "問題の追加", "問題一覧"])
+    section = st.sidebar.radio("項目を選択", ["各問題の分析情報", "学生ごとの分析情報", "問題の追加", "問題一覧"])
 
     # 各問題へアクセス
     if section == "各問題の分析情報":
         st.subheader("各問題の分析情報")
-        st.write("生徒が提出した解答を基に、GPT-4oを用いて分析します。")
+        st.write("学生が提出した解答を基に、GPT-4oを用いて分析します。")
         problems = fetch_problems()
         problem_titles = [problem['title'] for problem in problems]
         selected_problem_title = st.selectbox("問題を選択", problem_titles)
@@ -37,12 +37,12 @@ def teacher_dashboard():
         # 提出結果の総評
         st.subheader("提出結果の総評")
 
-        if st.button("総評を生成"):
+        if st.button("総評を確認"):
             submissions = fetch_submissions_by_problem(selected_problem['problem_id'])
             if submissions:
-                feedbacks = [submission['feedback'] for submission in submissions]
+                code = [f"user_id: {submission['user_id']}\n{submission['code']}" for submission in submissions]
 
-                class_feedback = analyze_class_feedback(feedbacks)
+                class_feedback = analyze_class_feedback(selected_problem, code)
                 st.write(class_feedback)
 
             else:
@@ -60,13 +60,16 @@ def teacher_dashboard():
             st.code(submission['code'], language="python")
             st.write("実行結果:")
             st.code(submission['output'], language="python")
-            st.write(f"フィードバック: {submission['feedback']}")
+            st.markdown(f"**:red[{submission["answer_result"]}]**")
+            if(submission["answer_result"] != "正解"):
+                st.write(f"間違った点: {submission['error_point']}")
+                st.write(f"原因の推測: {submission['error_inference']}")
             st.divider()
 
     # 問題追加ボタン
     elif section == "問題の追加":
         st.subheader("問題の追加")
-        st.write("生徒に表示する問題を追加できます。")
+        st.write("学生に表示する問題を追加できます。")
         title = st.text_input("問題名")
         description = st.text_area("問題文の内容")
         input_example = st.text_area("入力例")
@@ -76,6 +79,20 @@ def teacher_dashboard():
         if st.button("追加"):
             add_problem(title, description, input_example, output_example, display_order)
             st.success("問題が追加されました！")
+
+    elif section == "学生ごとの分析情報":
+        st.subheader("学生ごとの分析情報")
+        st.write("学生ごとの理解できている内容と、理解に誤りがある内容のまとめです。")
+        st.divider()
+
+        users = fetch_users()
+        for user in users:
+            st.write(f"学生ユーザ名: {user["username"]}")
+            st.write("理解できている内容:")
+            st.write(user["understanding"])
+            st.write("理解に誤りがある内容:")
+            st.write(user["misunderstanding"])
+            st.divider()
 
     # 問題一覧ボタン
     elif section == "問題一覧":
