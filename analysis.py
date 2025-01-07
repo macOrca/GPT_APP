@@ -135,13 +135,15 @@ def analyze_submission(problem_description, input_example, output_example, code,
     feedback = response.choices[0].message.parsed
     return feedback
 
-def analyze_class_feedback(feedbacks):
+def analyze_class_feedback(problem, code):
     prompt = f"""
-    以下はプログラミングの問題に対するクラス全体のフィードバックです：
+    以下はプログラミングの問題と、それに対する各学生の回答集です：
 
-    {', '.join(feedbacks)}
+    {problem}
 
-    クラス全体のパフォーマンスを要約し、よく見られる間違いを特定し、改善点を簡潔かつ専門的に提案してください。
+    {', '.join(code)}
+
+    クラス全体の提出コードを分析し、学生全体で理解できている内容、理解に誤りがある内容を明確に提示してください。user_idが同じ回答は同じユーザの回答です。各学生ごとに結果の良いものを最終結果としてください。
     """
     response = client.chat.completions.create(
         model=gpt_model,
@@ -161,7 +163,7 @@ def analyze_user_feedback(feedback, user_profile):
     ・前回の学習者モデル
     {user_profile}
 
-    このフィードバック(もしくは質問文)と、前回の学習者モデルの内容を統合し、抜けがないように注意して、ユーザが理解できているトピック、理解に誤りがあるトピックを明確に提示してください。
+    このフィードバック(もしくは質問文)と、前回の学習者モデルの内容を統合し、抜けがないように注意して、ユーザが理解できているトピック、理解に誤りがあるトピックを明確に箇条書きで提示してください。
     """
     response = client.beta.chat.completions.parse(
         model=gpt_model,
