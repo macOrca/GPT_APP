@@ -9,44 +9,10 @@ def teacher_dashboard():
     st.divider()
 
     # サイドバーに項目表示
-    section = st.sidebar.radio("項目を選択", ["問題の追加", "問題一覧", "各問題の分析情報"])
-
-    # 問題追加ボタン
-    if section == "問題の追加":
-        st.subheader("問題の追加")
-        st.write("生徒に表示する問題を追加できます。")
-        title = st.text_input("問題名")
-        description = st.text_area("問題文の内容")
-        input_example = st.text_input("入力例")
-        output_example = st.text_input("出力例")
-        display_order = 1
-
-        if st.button("追加"):
-            add_problem(title, description, input_example, output_example, display_order)
-            st.success("問題が追加されました！")
-
-    # 問題一覧ボタン
-    elif section == "問題一覧":
-        st.subheader("問題一覧")
-        st.write("現在生徒に表示される問題の一覧です。")
-        problems = fetch_problems()
-        if problems:
-            for problem in problems:
-                st.subheader(problem['title'])
-                st.write(problem['description'])
-                st.write("入力例:")
-                st.code(problem['input_example'], language="python")
-                st.write("出力例:")
-                st.code(problem['output_example'], language="python")
-                if st.button("この問題を削除", key=f"delete_{problem['problem_id']}"):
-                    delete_problem(problem['problem_id'])
-                    st.success(f"'{problem['title']}' を削除しました。")
-                st.divider()
-        else:
-            st.write("登録されている問題はありません。")
+    section = st.sidebar.radio("項目を選択", ["各問題の分析情報", "問題の追加", "問題一覧"])
 
     # 各問題へアクセス
-    elif section == "各問題の分析情報":
+    if section == "各問題の分析情報":
         st.subheader("各問題の分析情報")
         st.write("生徒が提出した解答を基に、GPT-4oを用いて分析します。")
         problems = fetch_problems()
@@ -93,6 +59,40 @@ def teacher_dashboard():
             st.write("解答:")
             st.code(submission['code'], language="python")
             st.write("実行結果:")
-            st.code(submission['result'])
+            st.code(submission['output'], language="python")
             st.write(f"フィードバック: {submission['feedback']}")
             st.divider()
+
+    # 問題追加ボタン
+    elif section == "問題の追加":
+        st.subheader("問題の追加")
+        st.write("生徒に表示する問題を追加できます。")
+        title = st.text_input("問題名")
+        description = st.text_area("問題文の内容")
+        input_example = st.text_area("入力例")
+        output_example = st.text_area("出力例")
+        display_order = 1
+
+        if st.button("追加"):
+            add_problem(title, description, input_example, output_example, display_order)
+            st.success("問題が追加されました！")
+
+    # 問題一覧ボタン
+    elif section == "問題一覧":
+        st.subheader("問題一覧")
+        st.write("現在生徒に表示される問題の一覧です。")
+        problems = fetch_problems()
+        if problems:
+            for problem in problems:
+                st.subheader(problem['title'])
+                st.write(problem['description'])
+                st.write("入力例:")
+                st.code(problem['input_example'], language="python")
+                st.write("出力例:")
+                st.code(problem['output_example'], language="python")
+                if st.button("この問題を削除", key=f"delete_{problem['problem_id']}"):
+                    delete_problem(problem['problem_id'])
+                    st.success(f"'{problem['title']}' を削除しました。")
+                st.divider()
+        else:
+            st.write("登録されている問題はありません。")
