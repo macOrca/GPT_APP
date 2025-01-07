@@ -51,8 +51,10 @@ def student_dashboard():
                 st.code(output_result)
                 st.write("フィードバック:")
                 st.write(feedback.feedback)
+                st.write(feedback)
                 user_profile = analyze_user_feedback(feedback, user_profile)
                 save_user_profile(st.session_state.user_id, user_profile)
+                st.write(user_profile)
                 fetch_user_profile(st.session_state.user_id)
         else:
             st.write("練習問題はありません。")
