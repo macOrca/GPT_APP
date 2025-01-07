@@ -70,9 +70,6 @@ def response_chatbot(problem_description, input_example, output_example, code, e
     学習者の理解していないトピック:
     {user_profile[1]}
 
-    学習者が興味を持っているトピック:
-    {user_profile[2]}
-
     内容を更新しました。上記の内容を考慮し、ユーザの質問に答えてください。回答する際に、問題の答えを直接提示しないでください。
     """
 
