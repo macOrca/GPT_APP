@@ -6,7 +6,7 @@ from auth import authenticate
 from db_utils import init_db
 
 # データベースの初期設定
-if not os.path.exists("student_model.db"):
+if not os.path.exists("app.db"):
     init_db()
 
 # Login state
@@ -16,7 +16,6 @@ if "authenticated" not in st.session_state:
     st.session_state.user_id = None
 
 if not st.session_state.authenticated:
-    st.set_page_config(layout="wide")
     st.header("情報I支援システム")
     st.subheader("ログイン")
     user_type = st.radio("ユーザータイプを選択してください:", ["生徒", "先生"])
