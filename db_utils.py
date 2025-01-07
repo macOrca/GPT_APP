@@ -66,6 +66,22 @@ def init_db():
     conn.commit()
     conn.close()
 
+def fetch_users():
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_id, username, understanding, misunderstanding FROM Users")
+    users = cursor.fetchall()
+    conn.close()
+    return [
+        {
+            'user_id': row[0],
+            'username': row[1],
+            'understanding': row[2],
+            'misunderstanding': row[3]
+        }
+        for row in users
+    ]
+
 def fetch_username(submission_user_id):
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
@@ -141,12 +157,40 @@ def fetch_submissions_by_problem(problem_id):
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT feedback FROM Submissions WHERE problem_id = ?",
+        "SELECT user_id, code FROM Submissions WHERE problem_id = ?",
         (problem_id,)
     )
     feedbacks = cursor.fetchall()
     conn.close()
-    return [{'feedback': row[0]} for row in feedbacks]
+    return [{'user_id': row[0], 'code': row[1]} for row in feedbacks]
+
+def fetch_submissions_by_user(user_id):
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT * FROM Submissions WHERE user_id = ?",
+        (user_id,)
+    )
+    submissions = cursor.fetchall()
+    conn.close()
+    return [
+        {
+            'submission_id': row[0],
+            'user_id': row[1],
+            'problem_id': row[2],
+            'code': row[3],
+            'output': row[4],
+            'answer_result': row[5],
+            'error_point': row[6],
+            'error_inference': row[7],
+            'problem_understanding': row[8],
+            'algorithm_design': row[9],
+            'code_implementation': row[10],
+            'execution_result': row[11],
+            'feedback': row[12]
+        }
+        for row in submissions
+    ]
 
 def save_submission(user_id, problem_id, code, output, feedback):
     conn = sqlite3.connect('app.db')
