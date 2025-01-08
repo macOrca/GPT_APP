@@ -17,7 +17,7 @@ def student_dashboard():
         st.write("問1 ~ 4を解き、コードを提出してください。")
         st.write("他の問題は、左のサイドバーから選択できます。")
         st.write("回答は何度でも再提出できます。")
-        st.write("注意：コードの入力はメモ帳などからコピー＆ペーストでお願いします！")
+        st.write("**注意：コードの入力はメモ帳などからコピー＆ペーストでお願いします！**")
         st.divider()
 
         problems = fetch_problems()
@@ -49,6 +49,10 @@ def student_dashboard():
                 st.code(submitted_code, language="python")
                 st.write("実行結果: 上の入力例をあなたのコードで実行した結果です。")
                 st.code(output_result)
+                if(feedback.answer_result == "正解"):
+                    st.success("正解!")
+                if(feedback.answer_result == "不正解"):
+                    st.error("不正解のようです。")
                 st.write("フィードバック:")
                 st.write(feedback.feedback)
                 st.write(feedback)
