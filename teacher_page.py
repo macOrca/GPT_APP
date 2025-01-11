@@ -84,6 +84,16 @@ def teacher_dashboard():
             add_problem(title, description, sample_code, input_example, output_example)
             st.success("問題が追加されました！")
 
+        st.divider()
+
+        with open("database.db", "rb") as file:
+            st.download_button(
+                label="Download Database",
+                data=file,
+                file_name="database.db",
+                mime="application/octet-stream"
+            )
+
     elif section == "学生ごとの分析情報":
         st.subheader("学生ごとの分析情報")
         st.write("学生ごとの理解できている内容と、理解に誤りがある内容のまとめです。")
