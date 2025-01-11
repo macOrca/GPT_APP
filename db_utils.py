@@ -21,8 +21,9 @@ def init_db():
         problem_id INTEGER PRIMARY KEY,
         title TEXT NOT NULL,
         description TEXT NOT NULL,
-        input_example TEXT NOT NULL,
-        output_example TEXT NOT NULL
+        sample_code TEXT,
+        input_example TEXT,
+        output_example TEXT
     )''')
 
     # Create Submissions table
@@ -50,18 +51,18 @@ def init_db():
 
     for user in user_data:
         cursor.execute('''
-        INSERT INTO Users (username, password, understanding, misunderstanding, interesting)
-        VALUES (?, ?, ?, ?, ?)
-        ''', (user['username'], user['password'], user['understanding'], user['misunderstanding'], user['interesting']))
+        INSERT INTO Users (username, password, understanding, misunderstanding)
+        VALUES (?, ?, ?, ?)
+        ''', (user['username'], user['password'], user['understanding'], user['misunderstanding']))
 
     with open("problems.json", "r", encoding="utf-8") as f:
         problem_data = json.load(f)
 
     for problem in problem_data:
         cursor.execute('''
-        INSERT INTO Problems (title, description, input_example, output_example)
-        VALUES (?, ?, ?, ?)
-        ''', (problem['title'], problem['description'], problem['input_example'], problem['output_example']))
+        INSERT INTO Problems (title, description, sample_code, input_example, output_example)
+        VALUES (?, ?, ?, ?, ?)
+        ''', (problem['title'], problem['description'], problem['sample_code'], problem['input_example'], problem['output_example']))
 
     conn.commit()
     conn.close()
@@ -104,19 +105,20 @@ def fetch_problems():
             'problem_id': row[0],
             'title': row[1],
             'description': row[2],
-            'input_example': row[3],
-            'output_example': row[4]
+            'sample_code': row[3],
+            'input_example': row[4],
+            'output_example': row[5]
         }
         for row in problems
     ]
 
-def add_problem(title, description, input_example, output_example):
+def add_problem(title, description, sample_code, input_example, output_example):
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO Problems (title, description, input_example, output_example)
-    VALUES (?, ?, ?, ?)
-    ''', (title, description, input_example, output_example))
+    INSERT INTO Problems (title, description, sample_code, input_example, output_example)
+    VALUES (?, ?, ?, ?, ?)
+    ''', (title, description, sample_code, input_example, output_example))
     conn.commit()
     conn.close()
 
@@ -157,12 +159,29 @@ def fetch_submissions_by_problem(problem_id):
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT user_id, code FROM Submissions WHERE problem_id = ?",
+        "SELECT * FROM Submissions WHERE problem_id = ?",
         (problem_id,)
     )
-    feedbacks = cursor.fetchall()
+    submissions = cursor.fetchall()
     conn.close()
-    return [{'user_id': row[0], 'code': row[1]} for row in feedbacks]
+    return [
+        {
+            'submission_id': row[0],
+            'user_id': row[1],
+            'problem_id': row[2],
+            'code': row[3],
+            'output': row[4],
+            'answer_result': row[5],
+            'error_point': row[6],
+            'error_inference': row[7],
+            'problem_understanding': row[8],
+            'algorithm_design': row[9],
+            'code_implementation': row[10],
+            'execution_result': row[11],
+            'feedback': row[12]
+        }
+        for row in submissions
+    ]
 
 def fetch_submissions_by_user(user_id):
     conn = sqlite3.connect('app.db')
