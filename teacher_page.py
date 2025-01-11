@@ -1,5 +1,5 @@
 import streamlit as st
-from db_utils import fetch_username, add_problem, delete_problem, fetch_problems, fetch_submissions, fetch_submissions_by_problem, fetch_users
+from db_utils import fetch_username, add_problem, delete_problem, fetch_problems, fetch_submissions_by_problem, fetch_users
 from analysis import analyze_class_feedback
 
 # Teacher dashboard
@@ -14,7 +14,7 @@ def teacher_dashboard():
     # 各問題へアクセス
     if section == "各問題の分析情報":
         st.subheader("各問題の分析情報")
-        st.write("学生が提出した解答を基に、GPT-4oを用いて分析します。")
+        st.write("問題別の学生による提出結果とその分析を表示します。")
         problems = fetch_problems()
         problem_titles = [problem['title'] for problem in problems]
         selected_problem_title = st.selectbox("問題を選択", problem_titles)
@@ -27,10 +27,14 @@ def teacher_dashboard():
         # 問題を表示
         st.subheader(selected_problem['title'])
         st.write(selected_problem['description'])
-        st.write("入力例:")
-        st.code(selected_problem['input_example'], language="python")
-        st.write("出力例:")
-        st.code(selected_problem['output_example'], language="python")
+        if(selected_problem['sample_code'] != "" and selected_problem['sample_code'] != None):
+            st.write("参考コード:")
+            st.code(selected_problem['sample_code'], language="python")
+        if(selected_problem["input_example"] != "" or selected_problem["output_example"] != ""):
+            st.write("入力例:")
+            st.code(selected_problem['input_example'], language="python")
+            st.write("出力例:")
+            st.code(selected_problem['output_example'], language="python")
 
         st.divider()
 
@@ -52,7 +56,7 @@ def teacher_dashboard():
 
         # 提出結果一覧
         st.subheader("提出結果一覧")
-        submissions = fetch_submissions()
+        submissions = fetch_submissions_by_problem(selected_problem["problem_id"])
         for submission in submissions:
             username = fetch_username(submission['user_id'])
             st.write(f"学生ユーザ名: {username}")
@@ -71,13 +75,13 @@ def teacher_dashboard():
         st.subheader("問題の追加")
         st.write("学生に表示する問題を追加できます。")
         title = st.text_input("問題名")
-        description = st.text_area("問題文の内容")
+        description = st.text_area("問題文の内容", height=200)
+        sample_code = st.text_area("参考コード", height=300)
         input_example = st.text_area("入力例")
         output_example = st.text_area("出力例")
-        display_order = 1
 
         if st.button("追加"):
-            add_problem(title, description, input_example, output_example, display_order)
+            add_problem(title, description, sample_code, input_example, output_example)
             st.success("問題が追加されました！")
 
     elif section == "学生ごとの分析情報":
@@ -103,6 +107,8 @@ def teacher_dashboard():
             for problem in problems:
                 st.subheader(problem['title'])
                 st.write(problem['description'])
+                st.write("参考コード")
+                st.code(problem['sample_code'], language="python")
                 st.write("入力例:")
                 st.code(problem['input_example'], language="python")
                 st.write("出力例:")
