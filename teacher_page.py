@@ -86,11 +86,11 @@ def teacher_dashboard():
 
         st.divider()
 
-        with open("database.db", "rb") as file:
+        with open("app.db", "rb") as file:
             st.download_button(
-                label="Download Database",
+                label="データベースファイルのダウンロード",
                 data=file,
-                file_name="database.db",
+                file_name="app.db",
                 mime="application/octet-stream"
             )
 
