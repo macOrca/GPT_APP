@@ -14,9 +14,9 @@ def student_dashboard():
 
     with col_form:
         st.header("解答提出ページ")
-        st.write("問1 ~ 4を解き、コードを提出してください。")
+        st.write("問1 ~ 5を解き、解答を提出してください。")
         st.write("他の問題は、左のサイドバーから選択できます。")
-        st.write("回答は何度でも再提出できます。")
+        st.write("解答は何度でも再提出できます。")
         st.write("**注意：コードの入力はメモ帳などからコピー＆ペーストでお願いします！**")
         st.divider()
 
@@ -32,19 +32,23 @@ def student_dashboard():
             # 問題を表示
             st.subheader(selected_problem['title'])
             st.write(selected_problem['description'])
-            st.write("入力例:")
-            st.code(selected_problem['input_example'], language="python")
-            st.write("出力例:")
-            st.code(selected_problem['output_example'], language="python")
+            if(selected_problem['sample_code'] != "" and selected_problem['sample_code'] != None):
+                st.write("参考コード:")
+                st.code(selected_problem['sample_code'], language="python")
+            if(selected_problem["input_example"] != "" or selected_problem["output_example"] != ""):
+                st.write("入力例:")
+                st.code(selected_problem['input_example'], language="python")
+                st.write("出力例:")
+                st.code(selected_problem['output_example'], language="python")
 
             # 解答の提出
-            submitted_code = st.text_area("解答のコードを入力してください", key=selected_problem['problem_id'], height=300)
+            submitted_code = st.text_area("解答を入力してください", key=selected_problem['problem_id'], height=300)
             if st.button("提出", key=f"submit_{selected_problem['problem_id']}"):
                 user_profile = fetch_user_profile(st.session_state.user_id)
                 output_result = execute_code(submitted_code, selected_problem['input_example'])
-                feedback = analyze_submission(selected_problem['description'], selected_problem['input_example'], selected_problem['output_example'], submitted_code, output_result, user_profile)
+                feedback = analyze_submission(selected_problem['description'], selected_problem['sample_code'], selected_problem['input_example'], selected_problem['output_example'], submitted_code, output_result, user_profile)
                 save_submission(st.session_state.user_id, selected_problem['problem_id'], submitted_code, output_result, feedback)
-                st.write("問題が提出されました!")
+                st.write("解答が提出されました!")
                 st.write("提出したコード:")
                 st.code(submitted_code, language="python")
                 st.write("実行結果: 上の入力例をあなたのコードで実行した結果です。")
@@ -92,7 +96,7 @@ def student_dashboard():
             user_profile = fetch_user_profile(st.session_state.user_id)
 
             # GPTの応答を取得
-            gpt_reply = response_chatbot(selected_problem['description'], selected_problem['input_example'], selected_problem['output_example'], submitted_code, output_result, feedback, user_profile)
+            gpt_reply = response_chatbot(selected_problem['description'], selected_problem['sample_code'], selected_problem['input_example'], selected_problem['output_example'], submitted_code, output_result, feedback, user_profile)
 
             # GPTの返答を追加
             st.session_state.messages.append({"role": "assistant", "content": gpt_reply})
