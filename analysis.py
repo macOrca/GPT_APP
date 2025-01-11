@@ -10,13 +10,13 @@ client = OpenAI(api_key = st.secrets["openai"]["OPENAI_API_KEY"])
 gpt_model = "gpt-4o"
 
 class Feedback(BaseModel):
-    answer_result: str
-    error_point: str
-    error_inference: str
     problem_understanding: str
     algorithm_design: str
     code_implementation: str
     execution_result: str
+    error_point: str
+    error_inference: str
+    answer_result: str
     feedback: str
 
 class User_Profile(BaseModel):
@@ -44,10 +44,13 @@ def execute_code(submitted_code, input_data):
     except Exception as e:
         return f"実行時にエラーが発生しました。エラー: {str(e)}"
 
-def response_chatbot(problem_description, input_example, output_example, code, execution_result, feedback, user_profile):
+def response_chatbot(problem_description, sample_code, input_example, output_example, code, execution_result, feedback, user_profile):
     prompt = f"""
     問題文:
     {problem_description}
+
+    参考コード:
+    {sample_code}
 
     入力例:
     {input_example}
@@ -70,7 +73,7 @@ def response_chatbot(problem_description, input_example, output_example, code, e
     学習者の理解していないトピック:
     {user_profile[1]}
 
-    内容を更新しました。上記の内容を考慮し、ユーザの質問に答えてください。回答する際に、直接の回答を示さず、ユーザが正しい回答にたどり着くためのヒントを示してください。
+    内容を更新しました。上記の内容を考慮し、ユーザの質問に答えてください。ユーザは高校生を想定し、高校生が理解できているように簡潔で専門用語の少ない内容で回答してください。また回答する際に、直接回答を示さず、ユーザが正しい回答にたどり着くためのヒントを示してください。
     """
 
     problem_message = {
@@ -98,10 +101,13 @@ def response_chatbot(problem_description, input_example, output_example, code, e
 
     return feedback
 
-def analyze_submission(problem_description, input_example, output_example, code, execution_result, user_profile):
+def analyze_submission(problem_description, sample_code, input_example, output_example, code, execution_result, user_profile):
     prompt = f"""
     問題文:
     {problem_description}
+
+    参考コード:
+    {sample_code}
 
     入力例:
     {input_example}
@@ -115,7 +121,7 @@ def analyze_submission(problem_description, input_example, output_example, code,
     提出されたコードの実行結果:
     {execution_result}
 
-    上記の内容に基づいて、以下の指示に従ってください。まず解答について、「正解」、「不正解」のどちらかのみを回答してください。次に、ユーザの誤った理解の内容を示し、原因を推測してください。加えて、問題の理解、アルゴリズム設計、コード実装、実行結果の4点について、ユーザの理解状態を推測してください。最後に、提出コードのフィードバックを行ってください、回答にあたっては学習者の理解状態を考慮し、良い点を褒め、直接の回答を示さず、ユーザが正しい回答にたどり着くためのヒントを示してください。
+    上記の内容に基づいて、以下の指示に従ってください。高校生にもわかるように、専門用語を使わず、平易で要点を絞った表現にしてください。まず、問題の理解、アルゴリズム設計、コード実装、実行結果の4点について、ユーザの理解状態を推測してください。次に、ユーザの誤った理解の内容を示し、原因を推測してください。加えて、解答について、「正解」、「不正解」のどちらかのみを回答してください。最後に、提出コードのフィードバックを行ってください、回答にあたっては学習者の理解状態を考慮し、良い点を褒め、直接の回答を示さず、ユーザが正しい回答にたどり着くためのヒントを示してください。
 
     学習者の理解している内容:
     {user_profile[0]}
@@ -127,7 +133,7 @@ def analyze_submission(problem_description, input_example, output_example, code,
     response = client.beta.chat.completions.parse(
         model=gpt_model,
         messages=[
-            {"role": "system", "content": "あなたは優秀なプログラミング教育の先生です。生成は日本語でお願いします。"},
+            {"role": "system", "content": "あなたは優秀なプログラミング教育の先生です。生成は日本語で行ってください。"},
             {"role": "user", "content": prompt},
         ],
         response_format=Feedback
@@ -143,12 +149,12 @@ def analyze_class_feedback(problem, code):
 
     {', '.join(code)}
 
-    クラス全体の提出コードを分析し、学生全体で理解できている内容、理解に誤りがある内容を明確に提示してください。user_idが同じ回答は同じユーザの回答です。各学生ごとに結果の良いものを最終結果としてください。
+    専門用語を使わず、平易で要点を絞った表現にしてください。クラス全体の提出コードを分析し、学生全体で理解できている内容、理解に誤りがある内容を明確に提示してください。user_idが同じ回答は同じユーザの回答です。各学生ごとに結果の良いものを最終結果としてください。
     """
     response = client.chat.completions.create(
         model=gpt_model,
         messages=[
-            {"role": "system", "content": "あなたは優秀なプログラミング教育の先生です。生成は日本語でお願いします。"},
+            {"role": "system", "content": "あなたは優秀なプログラミング教育の先生です。生成は日本語で行ってください。"},
             {"role": "user", "content": prompt}
         ]
     )
@@ -163,7 +169,7 @@ def analyze_user_feedback(feedback, user_profile):
     ・前回の学習者モデル
     {user_profile}
 
-    このフィードバック(もしくは質問文)と、前回の学習者モデルの内容を統合し、抜けがないように注意して、ユーザが理解できている内容、理解に誤りがある内容を明確に箇条書きで提示してください。
+    専門用語を使わず、平易で要点を絞った表現にしてください。このフィードバック(もしくは質問文)と、前回の学習者モデルの内容を統合し、抜けがないように注意して、ユーザが理解できている内容、理解に誤りがある内容を明確に箇条書きで提示してください。
     """
     response = client.beta.chat.completions.parse(
         model=gpt_model,
