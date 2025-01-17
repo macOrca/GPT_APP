@@ -29,7 +29,7 @@
     },
     {
         "title": "問5 - 2重ループ",
-        "description": "以下のルール通りに計算結果を表示する2重ループのプログラムを作成してください。\n\nルール\n1. 外側のループで1から5までの数を「行」として扱う（例: 1行目、2行目...）。\n2. 内側のループで「列」を扱い、行番号と列番号の積を計算する。\n3. 計算結果を出力例の様に並べて表示する。",
+        "description": "以下のルール通りに計算結果を表示する2重ループのプログラムを作成してください。\n\nルール\n1. 外側のループで1から5までの数を「行」として扱う。\n2. 内側のループも1から5までの数を「列」を扱い、行番号と列番号の積を計算する。\n3. 計算結果を出力例の様に並べて表示する。",
         "sample_code": "",
         "input_example": "",
         "output_example": "1 2 3 4 5\n2 4 6 8 10\n3 6 9 12 15\n4 8 12 16 20\n5 10 15 20 25"
@@ -65,7 +65,7 @@
     {
         "title": "問10 - 成績判定プログラム",
         "description": "以下のプログラムは、生徒の点数データを判定するプログラムです。仕様に従い、空欄「ア」〜「コ」に適切なコードを書いて完成させてください。\n\n仕様\n1. 点数が 80 点以上なら「優秀」、50 点以上なら「合格」、それ以外は「不合格」と判定する。\n2. 各成績の人数をカウントする。\n3. 全体の平均点を計算する。",
-        "sample_code": "# 点数のリスト\nscores = [85, 70, 45, 90, 60]\n\n# 成績を判定する関数\ndef judge_score(score):\n    if score >= 「ア」:\n        return \"優秀\"\n    elif score >= 「イ」:\n        return \"合格\"\n    else:\n        return 「ウ」\n\n# 平均点を計算する関数\ndef calculate_average(scores):\n    total = 0\n    for score in scores:\n        total = total + 「エ」  # 点数を合計\n    return total / 「オ」 # 平均点を計算\n\n# 判定処理\nresults = []\nfor score in scores:\n    result = 「カ」(score)  # 関数を呼び出す\n    results.append(result)\n\n# 結果の集計\nexcellent = results.count(「キ」)  # 優秀の人数\npass_count = results.count(「ク」)  # 合格の人数\nfail = results.count(「ケ」)  # 不合格の人数\n\n# 出力\nprint(\"判定結果: \", results)\nprint(\"優秀: \", excellent, \"人\")\nprint(\"合格: \", pass_count, \"人\")\nprint(\"不合格: \", fail, \"人\")\nprint(\"平均点: \", 「コ」, \"点\")  # 平均点を表示",
+        "sample_code": "# 点数のリスト\nscores = [85, 70, 45, 90, 60]\n\n# 成績を判定する関数\ndef judge_score(score):\n    if score >= 「ア」:\n        return \"優秀\"\n    elif score >= 「イ」:\n        return \"合格\"\n    else:\n        return 「ウ」\n\n# 平均点を計算する関数\ndef calculate_average(scores):\n    total = 0\n    for score in scores:\n        total = total + 「エ」  # 点数を合計\n    return total / 「オ」 # 平均点を計算\n\n# 判定処理\nresults = []\nfor score in scores:\n    result = 「カ」(score)  # 関数を呼び出す\n    results.append(result)\n\n# 結果の集計\nexcellent = results.count(「キ」)  # 優秀の人数\npass_count = results.count(「ク」)  # 合格の人数\nfail = results.count(「ケ」)  # 不合格の人数\n\n# 出力\nprint(\"判定結果: \", results)\nprint(\"優秀: \", excellent, \"人\")\nprint(\"合格: \", pass_count, \"人\")\nprint(\"不合格: \", fail, \"人\")\nprint(\"平均点: \", calculate_average(「コ」), \"点\")  # 平均点を表示",
         "input_example": "",
         "output_example": ""
     }
