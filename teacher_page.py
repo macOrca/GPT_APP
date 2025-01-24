@@ -123,9 +123,9 @@ def teacher_dashboard():
                 st.code(problem['input_example'], language="python")
                 st.write("出力例:")
                 st.code(problem['output_example'], language="python")
-                if st.button("この問題を削除", key=f"delete_{problem['problem_id']}"):
-                    delete_problem(problem['problem_id'])
-                    st.success(f"'{problem['title']}' を削除しました。")
+                #if st.button("この問題を削除", key=f"delete_{problem['problem_id']}"):
+                #    delete_problem(problem['problem_id'])
+                #    st.success(f"'{problem['title']}' を削除しました。")
                 st.divider()
         else:
             st.write("登録されている問題はありません。")
