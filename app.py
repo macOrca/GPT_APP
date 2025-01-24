@@ -18,7 +18,7 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     st.header("情報I支援システム")
     st.subheader("ログイン")
-    user_type = st.radio("ユーザータイプを選択してください:", ["学生", "先生"])
+    user_type = st.radio("ユーザータイプを選択してください:", ["生徒", "先生"])
     username = st.text_input("ユーザ名")
     password = st.text_input("パスワード", type="password")
     if st.button("ログイン"):
