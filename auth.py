@@ -9,7 +9,7 @@ def authenticate(username, password, user_type):
             return "teacher"
         else: None
 
-    if user_type == "学生":
+    if user_type == "生徒":
         conn = sqlite3.connect('app.db')
         cursor = conn.cursor()
         cursor.execute("SELECT user_id, username, password FROM Users WHERE username = ? AND password = ?", (username, password))
