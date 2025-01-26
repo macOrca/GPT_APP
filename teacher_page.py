@@ -14,7 +14,7 @@ def teacher_dashboard():
     # 各問題へアクセス
     if section == "各問題の分析情報":
         st.subheader("各問題の分析情報")
-        st.write("問題別の学生による提出結果とその分析を表示します。")
+        st.write("問題別に生徒による提出結果とその分析を表示します。")
         problems = fetch_problems()
         problem_titles = [problem['title'] for problem in problems]
         selected_problem_title = st.selectbox("問題を選択", problem_titles)
