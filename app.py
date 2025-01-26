@@ -16,7 +16,7 @@ if "authenticated" not in st.session_state:
     st.session_state.user_id = None
 
 if not st.session_state.authenticated:
-    st.header("情報I支援システム")
+    st.header("情報I - 学習支援AIシステム")
     st.subheader("ログイン")
     user_type = st.radio("ユーザータイプを選択してください:", ["生徒", "先生"])
     username = st.text_input("ユーザ名")
@@ -33,7 +33,7 @@ else:
     if st.session_state.role == "teacher":
         user_type = "先生"
     elif st.session_state.role == "student":
-        user_type = "学生"
+        user_type = "生徒"
     st.sidebar.header(f"{user_type}用ページ")
 
     if st.session_state.role == "student":
