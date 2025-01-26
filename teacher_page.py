@@ -9,7 +9,7 @@ def teacher_dashboard():
     st.divider()
 
     # サイドバーに項目表示
-    section = st.sidebar.radio("項目を選択", ["各問題の分析情報", "学生ごとの分析情報", "問題の追加", "問題一覧"])
+    section = st.sidebar.radio("項目を選択", ["各問題の分析情報", "生徒ごとの分析情報", "問題の追加", "問題一覧"])
 
     # 各問題へアクセス
     if section == "各問題の分析情報":
