@@ -50,7 +50,7 @@ def teacher_dashboard():
                 st.write(class_feedback)
 
             else:
-                st.write("学生の回答がありません。")
+                st.write("生徒の回答がありません。")
 
         st.divider()
 
@@ -59,7 +59,7 @@ def teacher_dashboard():
         submissions = fetch_submissions_by_problem(selected_problem["problem_id"])
         for submission in submissions:
             username = fetch_username(submission['user_id'])
-            st.write(f"学生ユーザ名: {username}")
+            st.write(f"生徒ユーザ名: {username}")
             st.write("解答:")
             st.code(submission['code'], language="python")
             st.write("実行結果:")
@@ -73,7 +73,7 @@ def teacher_dashboard():
     # 問題追加ボタン
     elif section == "問題の追加":
         st.subheader("問題の追加")
-        st.write("学生に表示する問題を追加できます。")
+        st.write("生徒に表示する問題を追加できます。")
         title = st.text_input("問題名")
         description = st.text_area("問題文の内容", height=200)
         sample_code = st.text_area("参考コード", height=300)
@@ -94,14 +94,14 @@ def teacher_dashboard():
                 mime="application/octet-stream"
             )
 
-    elif section == "学生ごとの分析情報":
-        st.subheader("学生ごとの分析情報")
-        st.write("学生ごとの理解できている内容と、理解に誤りがある内容のまとめです。")
+    elif section == "生徒ごとの分析情報":
+        st.subheader("生徒ごとの分析情報")
+        st.write("生徒ごとの理解できている内容と、理解に誤りがある内容のまとめです。")
         st.divider()
 
         users = fetch_users()
         for user in users:
-            st.write(f"学生ユーザ名: {user["username"]}")
+            st.write(f"生徒ユーザ名: {user["username"]}")
             st.write("理解できている内容:")
             st.write(user["understanding"])
             st.write("理解に誤りがある内容:")
